@@ -94,13 +94,13 @@ namespace PPR
 	}
 	void DLLApplication::InvokeOnProcessAttach()
 	{
-		auto currentModule = kxf::DynamicLibrary::GetCurrentModule();
+		auto currentModule = kxf::DynamicLibrary::GetCompiledModule();
 		DllMain(static_cast<HMODULE>(currentModule.GetHandle()), DLL_PROCESS_ATTACH, nullptr);
 	}
 
 	AppConfigLoader DLLApplication::LoadConfig()
 	{
-		m_PluginFS.SetLookupDirectory(kxf::NativeFileSystem::GetCurrentModuleRootDirectory());
+		m_PluginFS.SetLookupDirectory(kxf::NativeFileSystem::GetCompiledModuleRootDirectory());
 		m_ConfigFS.SetLookupDirectory(kxf::Shell::GetKnownDirectory(kxf::KnownDirectoryID::Documents) / "My Games" / xSE_CONFIG_FOLDER_NAME_W / xSE_FOLDER_NAME_W);
 
 		// Open log

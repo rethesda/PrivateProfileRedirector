@@ -19,12 +19,17 @@ namespace PPR
 			kxf::FSPath m_Path;
 			size_t m_ChangesCount = 0;
 			bool m_ExistOnDisk = false;
+			bool m_ShouldIgnore = false;
 
 			kxf::ReadWriteLock m_Lock;
 
 		private:
 			bool LoadFile();
 			bool SaveFile();
+			void Ignore()
+			{
+				m_ShouldIgnore = true;
+			}
 
 		public:
 			ConfigObject(kxf::FSPath filePath)
@@ -46,17 +51,21 @@ namespace PPR
 				return m_Path;
 			}
 
-			bool IsExistOnDisk() const
+			bool IsExistOnDisk() const noexcept
 			{
 				return m_ExistOnDisk;
 			}
-			bool HasChanges() const
+			bool HasChanges() const noexcept
 			{
 				return m_ChangesCount != 0;
 			}
-			bool IsEmpty() const
+			bool IsEmpty() const noexcept
 			{
 				return m_INI.IsEmpty();
+			}
+			bool ShouldIgnore() const noexcept
+			{
+				return m_ShouldIgnore;
 			}
 			void OnWrite();
 

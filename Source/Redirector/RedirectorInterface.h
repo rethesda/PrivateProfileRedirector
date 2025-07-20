@@ -20,11 +20,14 @@ namespace PPR
 {
 	class RedirectorInterface final: public AppModule
 	{
+		friend struct PrivateProfileT;
+
 		public:
 			static RedirectorInterface& GetInstance();
 
 		private:
 			kxf::FlagSet<RedirectorOption> m_Options;
+			kxf::Utility::SetIC<kxf::String> m_Exclusions;
 			std::unique_ptr<kxf::IEncodingConverter> m_EncodingConverter;
 			int m_SaveOnWriteBuffer = 0;
 
@@ -32,7 +35,19 @@ namespace PPR
 			kxf::Utility::UnorderedMapIC<kxf::String, std::unique_ptr<ConfigObject>> m_INIMap;
 			std::atomic<size_t> m_TotalWriteCount = 0;
 
-			std::vector<kxf::CFunctionHook> m_UntypedHooks;
+			// Hooks
+			kxf::CFunctionTypedHook<decltype(::GetPrivateProfileStringA)> m_GetStringA;
+			kxf::CFunctionTypedHook<decltype(::GetPrivateProfileStringW)> m_GetStringW;
+
+			kxf::CFunctionTypedHook<decltype(::GetPrivateProfileIntA)> m_GetIntA;
+			kxf::CFunctionTypedHook<decltype(::GetPrivateProfileIntW)> m_GetIntW;
+
+			kxf::CFunctionTypedHook<decltype(::GetPrivateProfileSectionNamesA)> m_GetSectionNamesA;
+			kxf::CFunctionTypedHook<decltype(::GetPrivateProfileSectionNamesW)> m_GetSectionNamesW;
+
+			kxf::CFunctionTypedHook<decltype(::GetPrivateProfileSectionA)> m_GetSectionA;
+			kxf::CFunctionTypedHook<decltype(::GetPrivateProfileSectionW)> m_GetSectionW;
+
 			kxf::CFunctionTypedHook<decltype(::WritePrivateProfileStringA)> m_WriteStringA;
 			kxf::CFunctionTypedHook<decltype(::WritePrivateProfileStringW)> m_WriteStringW;
 
@@ -53,15 +68,6 @@ namespace PPR
 			void OnExit(DLLApplication& app) override;
 			
 			// RedirectorInterface
-			auto& GetWriteStringA() noexcept
-			{
-				return m_WriteStringA;
-			}
-			auto& GetWriteStringW() noexcept
-			{
-				return m_WriteStringW;
-			}
-
 			kxf::IEncodingConverter& GetEncodingConverter() const noexcept
 			{
 				return *m_EncodingConverter;

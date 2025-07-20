@@ -39,6 +39,15 @@ namespace PPR
 
 		auto encodingConverter = std::make_unique<kxf::NativeEncodingConverter>(config.GetRedirectorSection().GetAttributeInt(L"CodePage", CP_ACP));
 
+		// Exclusions
+		if (auto section = config.Get().QueryElement("Redirector.Exclusions"))
+		{
+			section.EnumAttributeValues("Exclusion", [&](kxf::String value)
+			{
+				m_Exclusions.emplace(std::move(value));
+			});
+		}
+
 		// Print options
 		KXF_SCOPEDLOG.Info().Format("WriteProtected: {}", m_Options.Contains(RedirectorOption::WriteProtected));
 		KXF_SCOPEDLOG.Info().Format("NativeWrite: {}", m_Options.Contains(RedirectorOption::NativeWrite));
@@ -51,6 +60,11 @@ namespace PPR
 		KXF_SCOPEDLOG.Info().Format("CodePage: '{}'/{}", encodingConverter->GetEncodingName(), encodingConverter->GetCodePage());
 		m_EncodingConverter = std::move(encodingConverter);
 
+		for (size_t counter = 0; const auto& exclusion: m_Exclusions)
+		{
+			KXF_SCOPEDLOG.Info().Format("Exclusion #{}: '{}'", ++counter, exclusion);
+		}
+
 		KXF_SCOPEDLOG.SetSuccess();
 	}
 
@@ -61,16 +75,18 @@ namespace PPR
 		auto& controller = kxf::CFunctionHookController::GetInstance();
 		if (auto transaction = controller.NewTransaction())
 		{
-			m_UntypedHooks.reserve(16);
+			transaction.AttachFunction(m_GetStringA, &::GetPrivateProfileStringA, &PrivateProfile::GetStringA, "GetPrivateProfileStringA");
+			transaction.AttachFunction(m_GetStringW, &::GetPrivateProfileStringW, &PrivateProfile::GetStringW, "GetPrivateProfileStringW");
 
-			transaction.AttachFunction(m_UntypedHooks.emplace_back(), &::GetPrivateProfileStringA, &PrivateProfile::GetStringA, "GetPrivateProfileStringA");
-			transaction.AttachFunction(m_UntypedHooks.emplace_back(), &::GetPrivateProfileStringW, &PrivateProfile::GetStringW, "GetPrivateProfileStringW");
-			transaction.AttachFunction(m_UntypedHooks.emplace_back(), &::GetPrivateProfileIntA, &PrivateProfile::GetIntA, "GetPrivateProfileIntA");
-			transaction.AttachFunction(m_UntypedHooks.emplace_back(), &::GetPrivateProfileIntW, &PrivateProfile::GetIntW, "GetPrivateProfileIntW");
-			transaction.AttachFunction(m_UntypedHooks.emplace_back(), &::GetPrivateProfileSectionNamesA, &PrivateProfile::GetSectionNamesA, "GetPrivateProfileSectionNamesA");
-			transaction.AttachFunction(m_UntypedHooks.emplace_back(), &::GetPrivateProfileSectionNamesW, &PrivateProfile::GetSectionNamesW, "GetPrivateProfileSectionNamesW");
-			transaction.AttachFunction(m_UntypedHooks.emplace_back(), &::GetPrivateProfileSectionA, &PrivateProfile::GetSectionA, "GetPrivateProfileSectionA");
-			transaction.AttachFunction(m_UntypedHooks.emplace_back(), &::GetPrivateProfileSectionW, &PrivateProfile::GetSectionW, "GetPrivateProfileSectionW");
+			transaction.AttachFunction(m_GetIntA, &::GetPrivateProfileIntA, &PrivateProfile::GetIntA, "GetPrivateProfileIntA");
+			transaction.AttachFunction(m_GetIntW, &::GetPrivateProfileIntW, &PrivateProfile::GetIntW, "GetPrivateProfileIntW");
+
+			transaction.AttachFunction(m_GetSectionNamesA, &::GetPrivateProfileSectionNamesA, &PrivateProfile::GetSectionNamesA, "GetPrivateProfileSectionNamesA");
+			transaction.AttachFunction(m_GetSectionNamesW, &::GetPrivateProfileSectionNamesW, &PrivateProfile::GetSectionNamesW, "GetPrivateProfileSectionNamesW");
+
+			transaction.AttachFunction(m_GetSectionA, &::GetPrivateProfileSectionA, &PrivateProfile::GetSectionA, "GetPrivateProfileSectionA");
+			transaction.AttachFunction(m_GetSectionW, &::GetPrivateProfileSectionW, &PrivateProfile::GetSectionW, "GetPrivateProfileSectionW");
+
 			transaction.AttachFunction(m_WriteStringA, &::WritePrivateProfileStringA, &PrivateProfile::WriteStringA, "WritePrivateProfileStringA");
 			transaction.AttachFunction(m_WriteStringW, &::WritePrivateProfileStringW, &PrivateProfile::WriteStringW, "WritePrivateProfileStringW");
 
@@ -84,10 +100,18 @@ namespace PPR
 		auto& controller = kxf::CFunctionHookController::GetInstance();
 		if (auto transaction = controller.NewTransaction())
 		{
-			for (auto& hook: m_UntypedHooks)
-			{
-				transaction.DetachHook(hook);
-			}
+			transaction.DetachHook(m_GetStringA);
+			transaction.DetachHook(m_GetStringW);
+
+			transaction.DetachHook(m_GetIntA);
+			transaction.DetachHook(m_GetIntW);
+
+			transaction.DetachHook(m_GetSectionNamesA);
+			transaction.DetachHook(m_GetSectionNamesW);
+
+			transaction.DetachHook(m_GetSectionA);
+			transaction.DetachHook(m_GetSectionW);
+
 			transaction.DetachHook(m_WriteStringA);
 			transaction.DetachHook(m_WriteStringW);
 
@@ -236,8 +260,25 @@ namespace PPR
 
 		auto result = m_INIMap.insert_or_assign(filePath, std::make_unique<ConfigObject>(filePath));
 		auto& config = result.first->second;
-		config->LoadFile();
 
+		// Check exclusions
+		bool ignored = false;
+		for (const auto& exclusion: m_Exclusions)
+		{
+			if (kxf::String::MatchesWildcards(filePath, exclusion, kxf::StringActionFlag::IgnoreCase))
+			{
+				ignored = true;
+
+				config->Ignore();
+				KXF_SCOPEDLOG.Warning().Format("The requested file path matches exclusion pattern '{}', ignoring this file", exclusion);
+				break;
+			}
+		}
+
+		if (!ignored)
+		{
+			config->LoadFile();
+		}
 		KXF_SCOPEDLOG.Info().Format("Attempt to access file: '{}' -> file object {}. Exist on disk: {}", filePath, result.second ? "initialized" : "overwritten", config->IsExistOnDisk());
 		
 		KXF_SCOPEDLOG.SetSuccess();
@@ -254,7 +295,11 @@ namespace PPR
 			{
 				auto lock = config->LockExclusive();
 
-				if (config->HasChanges())
+				if (config->ShouldIgnore())
+				{
+					KXF_SCOPEDLOG.Info().Format("Ignored file: '{}', skipped", path);
+				}
+				else if (config->HasChanges())
 				{
 					if (config->SaveFile())
 					{

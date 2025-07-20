@@ -5,6 +5,8 @@ namespace PPR
 {
 	AppConfigLoader::AppConfigLoader(std::shared_ptr<kxf::IInputStream> stream)
 	{
+		m_Config.SetOptions(kxf::INIDocumentOption::MultiKey);
+
 		if (stream && m_Config.Load(*stream))
 		{
 			m_General = m_Config.QueryElement("General");

@@ -69,6 +69,10 @@ namespace PPR
 				return m_Config.IsNull();
 			}
 
+			const kxf::INIDocument& Get() const noexcept
+			{
+				return m_Config;
+			}
 			const kxf::INIDocumentSection& GetGeneralSection() const noexcept
 			{
 				return m_General;
