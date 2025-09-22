@@ -62,8 +62,16 @@ namespace
 
 		if (dst && src)
 		{
+			if (dst == src)
+			{
+				kxf::Log::WarningCategory("StringCopyBuffer", "The source and the destination are the same");
+			}
+
 			// Zero out the dst buffer first
-			std::memset(dst, 0, dstSize * sizeof(TChar));
+			if (dst != src)
+			{
+				std::memset(dst, 0, dstSize * sizeof(TChar));
+			}
 
 			// See how much we need to copy
 			size_t copySize = std::min(dstSize, srcSize);
@@ -103,7 +111,10 @@ namespace
 			}
 
 			// Copy the data to dst
-			std::memcpy(dst, src, copySize * sizeof(TChar));
+			if (dst != src)
+			{
+				std::memcpy(dst, src, copySize * sizeof(TChar));
+			}
 			kxf::Utility::SetIfNotNull(copiedSize, copySize);
 
 			if (dstSize > srcSize)
