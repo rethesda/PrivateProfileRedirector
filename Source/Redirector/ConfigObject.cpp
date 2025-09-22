@@ -14,6 +14,7 @@ namespace PPR
 		options.Add(kxf::INIDocumentOption::Quotes);
 		options.Add(kxf::INIDocumentOption::IgnoreCase);
 		options.Mod(kxf::INIDocumentOption::InlineComments, instance.IsOptionEnabled(RedirectorOption::ProcessInlineComments));
+		options.Mod(kxf::INIDocumentOption::MultiKey, instance.IsOptionEnabled(RedirectorOption::ProcessMultiKey));
 
 		if (m_INI.Load(m_Path, options))
 		{

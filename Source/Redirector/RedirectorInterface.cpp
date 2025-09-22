@@ -30,6 +30,7 @@ namespace PPR
 		config.LoadRedirectorOption(m_Options, RedirectorOption::SaveOnProcessDetach, L"SaveOnProcessDetach", RedirectorOption::NativeWrite);
 		config.LoadRedirectorOption(m_Options, RedirectorOption::SaveOnGameSave, L"SaveOnGameSave", RedirectorOption::NativeWrite);
 		config.LoadRedirectorOption(m_Options, RedirectorOption::ProcessInlineComments, L"ProcessInlineComments");
+		config.LoadRedirectorOption(m_Options, RedirectorOption::ProcessMultiKey, L"ProcessMultiKey");
 		
 		m_SaveOnWriteBuffer = config.GetRedirectorSection().GetAttributeInt(L"SaveOnWriteBuffer", m_SaveOnWriteBuffer);
 		if (!m_Options.Contains(RedirectorOption::SaveOnWrite) || std::clamp(m_SaveOnWriteBuffer, 2, 4096) != m_SaveOnWriteBuffer)
@@ -56,6 +57,7 @@ namespace PPR
 		KXF_SCOPEDLOG.Info().Format("SaveOnProcessDetach: {}", m_Options.Contains(RedirectorOption::SaveOnProcessDetach));
 		KXF_SCOPEDLOG.Info().Format("SaveOnGameSave: {}", m_Options.Contains(RedirectorOption::SaveOnGameSave));
 		KXF_SCOPEDLOG.Info().Format("ProcessInlineComments: {}", m_Options.Contains(RedirectorOption::ProcessInlineComments));
+		KXF_SCOPEDLOG.Info().Format("ProcessMultiKey: {}", m_Options.Contains(RedirectorOption::ProcessMultiKey));
 		KXF_SCOPEDLOG.Info().Format("SaveOnWriteBuffer: {}", m_SaveOnWriteBuffer);
 		KXF_SCOPEDLOG.Info().Format("CodePage: '{}'/{}", encodingConverter->GetEncodingName(), encodingConverter->GetCodePage());
 		m_EncodingConverter = std::move(encodingConverter);
@@ -250,8 +252,8 @@ namespace PPR
 		}
 
 		// Load the file
-		KXF_SCOPEDLOG_ARGS(filePath);
 		kxf::WriteLockGuard lock(m_INIMapLock);
+		KXF_SCOPEDLOG_ARGS(filePath);
 
 		if (filePath.IsEmpty())
 		{

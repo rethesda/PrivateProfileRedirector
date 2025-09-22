@@ -5,6 +5,127 @@
 
 namespace PPR
 {
+	template<class TChar>
+	auto EncodingFrom(const kxf::String& str, kxf::IEncodingConverter& converter)
+	{
+		if constexpr(std::is_same_v<TChar, char>)
+		{
+			return converter.ToMultiByte(kxf::StringViewOf(str));
+		}
+		else if constexpr(std::is_same_v<TChar, wchar_t>)
+		{
+			return str.view();
+		}
+		else
+		{
+			static_assert(sizeof(TChar*) == 0, "invalid type");
+		}
+	}
+
+	inline kxf::String EncodingTo(const char* str, kxf::IEncodingConverter& converter)
+	{
+		if (str)
+		{
+			return converter.ToWideChar(str);
+		}
+		return {};
+	}
+	inline kxf::String EncodingTo(const wchar_t* str, kxf::IEncodingConverter& converter)
+	{
+		if (str)
+		{
+			return str;
+		}
+		return {};
+	}
+}
+
+namespace PPR
+{
+	template<class TChar>
+	class ZSSTRZZ final
+	{
+		private:
+			std::basic_string<TChar> m_Buffer;
+			kxf::IEncodingConverter& m_EncodingConverter;
+			size_t m_MaxSize = 0;
+
+			size_t m_Count = 0;
+			bool m_Truncated = false;
+
+		private:
+			bool TruncateIfNeeded()
+			{
+				if (m_Buffer.length() > m_MaxSize)
+				{
+					m_Buffer.resize(m_MaxSize);
+					if (m_MaxSize >= 2)
+					{
+						m_Buffer[m_MaxSize - 2] = 0;
+					}
+					if (m_MaxSize >= 1)
+					{
+						m_Buffer[m_MaxSize - 1] = 0;
+					}
+
+					return true;
+				}
+				return false;
+			}
+
+		public:
+			ZSSTRZZ(size_t maxSize, kxf::IEncodingConverter& encodingConverter)
+				:m_EncodingConverter(encodingConverter), m_MaxSize(maxSize)
+			{
+				m_Buffer.reserve(m_MaxSize <= 8192 ? m_MaxSize : 0);
+			}
+
+		public:
+			void OnItem(const kxf::String& item)
+			{
+				if (m_MaxSize != 0 && m_Buffer.size() < m_MaxSize)
+				{
+					m_Buffer.append(EncodingFrom<TChar>(item, m_EncodingConverter));
+					m_Buffer.append(1, 0);
+
+					m_Count++;
+				}
+			}
+			void OnItem(const kxf::String& key, const kxf::String& value)
+			{
+				OnItem(key + '=' + value);
+			}
+			std::basic_string<TChar>& Finalize(bool* truncated = nullptr, size_t* count = nullptr)
+			{
+				if (m_MaxSize != 0)
+				{
+					m_Buffer.append(m_Count != 0 ? 1 : 2, 0);
+					m_Truncated = TruncateIfNeeded();
+				}
+				else
+				{
+					m_Buffer.clear();
+					m_Truncated = true;
+				}
+				kxf::Utility::SetIfNotNull(truncated, m_Truncated);
+				kxf::Utility::SetIfNotNull(count, m_Count);
+
+				return m_Buffer;
+			}
+
+			size_t GetCount() const noexcept
+			{
+				return m_Count;
+			}
+			bool WasTruncated() const noexcept
+			{
+				return m_Truncated;
+			}
+	};
+}
+
+namespace PPR
+{
 	class INIWrapper final
 	{
 		public:
@@ -24,40 +145,6 @@ namespace PPR
 				UTF32LE,
 				UTF32BE
 			};
-
-			template<class TChar>
-			static auto EncodingFrom(const kxf::String& str, kxf::IEncodingConverter& converter)
-			{
-				if constexpr(std::is_same_v<TChar, char>)
-				{
-					return converter.ToMultiByte(kxf::StringViewOf(str));
-				}
-				else if constexpr(std::is_same_v<TChar, wchar_t>)
-				{
-					return str.view();
-				}
-				else
-				{
-					static_assert(sizeof(TChar*) == 0, "invalid type");
-				}
-			}
-
-			static kxf::String EncodingTo(const char* str, kxf::IEncodingConverter& converter)
-			{
-				if (str)
-				{
-					return converter.ToWideChar(str);
-				}
-				return {};
-			}
-			static kxf::String EncodingTo(const wchar_t* str, kxf::IEncodingConverter& converter)
-			{
-				if (str)
-				{
-					return str;
-				}
-				return {};
-			}
 
 			template<class TChar, class TFunc>
 			requires(std::is_invocable_r_v<kxf::CallbackCommand, TFunc, std::basic_string<TChar>&, const kxf::String&>)
@@ -166,6 +253,15 @@ namespace PPR
 				return m_Options;
 			}
 
+			auto& Get() noexcept
+			{
+				return m_INI;
+			}
+			auto& Get() const noexcept
+			{
+				return m_INI;
+			}
+
 			bool Load(const kxf::FSPath& path, kxf::FlagSet<kxf::INIDocumentOption> options);
 			bool Save(const kxf::FSPath& path, Encoding encoding = Encoding::None);
 
@@ -204,8 +300,6 @@ namespace PPR
 				}
 			}
 
-			std::vector<kxf::String> GetSectionNames() const;
-			std::vector<kxf::String> GetKeyNames(const kxf::String& section) const;
 			bool DeleteSection(const kxf::String& section)
 			{
 				return m_INI.RemoveSection(section);
@@ -219,13 +313,25 @@ namespace PPR
 			template<class TChar>
 			std::basic_string<TChar> GetSectionNamesZSSTRZZ(kxf::IEncodingConverter& converter, size_t maxSize = kxf::String::npos, bool* truncated = nullptr, size_t* count = nullptr) const
 			{
-				return ToZSSTRZZ<TChar>(GetSectionNames(), maxSize, truncated, count, converter);
+				ZSSTRZZ<TChar> zstr(maxSize, converter);
+				m_INI.EnumSectionNames([&](kxf::String name)
+				{
+					zstr.OnItem(name);
+				});
+				return zstr.Finalize(truncated, count);
 			}
 
 			template<class TChar>
 			std::basic_string<TChar> GetKeyNamesZSSTRZZ(kxf::IEncodingConverter& converter, const kxf::String& section, size_t maxSize = kxf::String::npos, bool* truncated = nullptr, size_t* count = nullptr) const
 			{
-				return ToZSSTRZZ<TChar>(GetKeyNames(section), maxSize, truncated, count, converter);
+				bool isMultikey = m_INI.GetOptions().Contains(kxf::INIDocumentOption::MultiKey);
+
+				ZSSTRZZ<TChar> zstr(maxSize, converter);
+				m_INI.EnumKeyNames(section, [&](kxf::String name)
+				{
+					zstr.OnItem(name);
+				}, !isMultikey);
+				return zstr.Finalize(truncated, count);
 			}
 	};
 }

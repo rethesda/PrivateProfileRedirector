@@ -237,19 +237,4 @@ namespace PPR
 		KXF_SCOPEDLOG.SetFail();
 		return false;
 	}
-
-	std::vector<kxf::String> INIWrapper::GetSectionNames() const
-	{
-		std::vector<kxf::String> items;
-		m_INI.EnumSectionNames(kxf::Utility::VectorCallbackAdapter(items));
-
-		return items;
-	}
-	std::vector<kxf::String> INIWrapper::GetKeyNames(const kxf::String& section) const
-	{
-		std::vector<kxf::String> items;
-		m_INI.EnumKeyNames(section, kxf::Utility::VectorCallbackAdapter(items));
-
-		return items;
-	}
 }

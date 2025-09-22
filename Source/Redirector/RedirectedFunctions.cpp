@@ -219,7 +219,7 @@ namespace PPR
 
 				size_t count = 0;
 				bool truncated = false;
-				auto keys = ini.GetKeyNamesZSSTRZZ<TChar>(converter, INIWrapper::EncodingTo(appName, converter), nSize, &truncated, &count);
+				auto keys = ini.GetKeyNamesZSSTRZZ<TChar>(converter, EncodingTo(appName, converter), nSize, &truncated, &count);
 				KXF_SCOPEDLOG.Trace(logCategory).Format("Enumerated {} keys of {} characters ({} bytes), is truncated: {}",
 														count,
 														keys.length(),
@@ -245,9 +245,9 @@ namespace PPR
 			}
 
 			// Get the value
-			if (auto value = ini.QueryValue(INIWrapper::EncodingTo(appName, converter), INIWrapper::EncodingTo(keyName, converter)))
+			if (auto value = ini.QueryValue(EncodingTo(appName, converter), EncodingTo(keyName, converter)))
 			{
-				auto valueRef = INIWrapper::EncodingFrom<TChar>(*value, converter);
+				auto valueRef = EncodingFrom<TChar>(*value, converter);
 
 				size_t copiedSize = 0;
 				HRESULT hr = StringCopyBuffer(lpReturnedString, nSize, valueRef.data(), valueRef.length(), &copiedSize);
@@ -309,7 +309,7 @@ namespace PPR
 
 			RedirectorInterface& redirector = RedirectorInterface::GetInstance();
 			kxf::IEncodingConverter& converter = redirector.GetEncodingConverter();
-			ConfigObject& configObject = redirector.GetOrLoadFile(INIWrapper::EncodingTo(lpFileName, converter));
+			ConfigObject& configObject = redirector.GetOrLoadFile(EncodingTo(lpFileName, converter));
 			if (configObject.ShouldIgnore())
 			{
 				return InvokeOriginalFunc<TChar>(logCategory, redirector.m_GetStringA, redirector.m_GetStringW, appName, keyName, defaultValue, lpReturnedString, nSize, lpFileName);
@@ -340,7 +340,7 @@ namespace PPR
 			RedirectorInterface& redirector = RedirectorInterface::GetInstance();
 			kxf::IEncodingConverter& converter = redirector.GetEncodingConverter();
 
-			ConfigObject& configObject = redirector.GetOrLoadFile(INIWrapper::EncodingTo(lpFileName, converter));
+			ConfigObject& configObject = redirector.GetOrLoadFile(EncodingTo(lpFileName, converter));
 			if (configObject.ShouldIgnore())
 			{
 				return InvokeOriginalFunc<TChar>(logCategory, redirector.m_GetIntA, redirector.m_GetIntW, appName, keyName, defaultValue, lpFileName);
@@ -348,7 +348,7 @@ namespace PPR
 
 			auto lock = configObject.LockShared();
 
-			if (auto value = configObject.GetINI().QueryValue(INIWrapper::EncodingTo(appName, converter), INIWrapper::EncodingTo(keyName, converter)))
+			if (auto value = configObject.GetINI().QueryValue(EncodingTo(appName, converter), EncodingTo(keyName, converter)))
 			{
 				if (auto intValue = value->ToInteger<INT>(-1))
 				{
@@ -385,7 +385,7 @@ namespace PPR
 
 			RedirectorInterface& redirector = RedirectorInterface::GetInstance();
 			kxf::IEncodingConverter& converter = redirector.GetEncodingConverter();
-			ConfigObject& configObject = redirector.GetOrLoadFile(INIWrapper::EncodingTo(lpFileName, converter));
+			ConfigObject& configObject = redirector.GetOrLoadFile(EncodingTo(lpFileName, converter));
 			if (configObject.ShouldIgnore())
 			{
 				return InvokeOriginalFunc<TChar>(logCategory, redirector.m_GetSectionNamesA, redirector.m_GetSectionNamesW, lpszReturnBuffer, nSize, lpFileName);
@@ -421,7 +421,7 @@ namespace PPR
 			RedirectorInterface& redirector = RedirectorInterface::GetInstance();
 			kxf::IEncodingConverter& converter = redirector.GetEncodingConverter();
 
-			ConfigObject& configObject = redirector.GetOrLoadFile(INIWrapper::EncodingTo(lpFileName, converter));
+			ConfigObject& configObject = redirector.GetOrLoadFile(EncodingTo(lpFileName, converter));
 			if (configObject.ShouldIgnore())
 			{
 				return InvokeOriginalFunc<TChar>(logCategory, redirector.m_GetSectionA, redirector.m_GetSectionW, appName, lpReturnedString, nSize, lpFileName);
@@ -429,24 +429,18 @@ namespace PPR
 
 			auto lock = configObject.LockShared();
 			const INIWrapper& ini = configObject.GetINI();
-
 			KXF_SCOPEDLOG.Trace(logCategory).Format("Enum all key-value from section '{}' of file '{}'", appName, lpFileName);
 
 			size_t count = 0;
 			bool truncated = false;
-			auto sectionName = INIWrapper::EncodingTo(appName, converter);
-			auto keyValuePairs = INIWrapper::CreateZSSTRZZ<TChar>([&](std::basic_string<TChar>& buffer, const kxf::String& keyName)
-			{
-				if (auto value = ini.QueryValue(sectionName, keyName))
-				{
-					buffer.append(INIWrapper::EncodingFrom<TChar>(keyName, converter));
-					buffer.append(1, '=');
-					buffer.append(INIWrapper::EncodingFrom<TChar>(*value, converter));
+			auto sectionName = EncodingTo(appName, converter);
 
-					return kxf::CallbackCommand::Continue;
-				}
-				return kxf::CallbackCommand::Discard;
-			}, ini.GetKeyNames(sectionName), nSize, &truncated, &count);
+			ZSSTRZZ<TChar> zstr(nSize, converter);
+			ini.Get().EnumSectionItems(sectionName, [&](kxf::String name, kxf::String value)
+			{
+				zstr.OnItem(name, value);
+			});
+			auto keyValuePairs = zstr.Finalize(&truncated, &count);
 
 			KXF_SCOPEDLOG.Trace(logCategory).Format("Enumerated {} key-value pairs of {} characters ({} bytes), is truncated: {}",
 													count,
@@ -496,7 +490,7 @@ namespace PPR
 				}
 
 				kxf::IEncodingConverter& converter = redirector.GetEncodingConverter();
-				ConfigObject& configObject = redirector.GetOrLoadFile(INIWrapper::EncodingTo(lpFileName, converter));
+				ConfigObject& configObject = redirector.GetOrLoadFile(EncodingTo(lpFileName, converter));
 				if (configObject.ShouldIgnore())
 				{
 					ignored = true;
@@ -509,7 +503,7 @@ namespace PPR
 				// Delete section
 				if (!keyName)
 				{
-					if (ini.DeleteSection(INIWrapper::EncodingTo(appName, converter)))
+					if (ini.DeleteSection(EncodingTo(appName, converter)))
 					{
 						KXF_SCOPEDLOG.Trace(logCategory).Format("Section '{}' deleted", appName);
 						configObject.OnWrite();
@@ -522,7 +516,7 @@ namespace PPR
 				// Delete value
 				if (!lpString)
 				{
-					if (ini.DeleteKey(INIWrapper::EncodingTo(appName, converter), INIWrapper::EncodingTo(keyName, converter)))
+					if (ini.DeleteKey(EncodingTo(appName, converter), EncodingTo(keyName, converter)))
 					{
 						KXF_SCOPEDLOG.Trace(logCategory).Format("Key '{}' in section '{}' deleted", keyName, appName);
 						configObject.OnWrite();
@@ -534,7 +528,7 @@ namespace PPR
 
 				// Set value
 				bool isSameData = false;
-				if (ini.SetValue(appName, keyName, INIWrapper::EncodingTo(lpString, converter), &isSameData))
+				if (ini.SetValue(appName, keyName, EncodingTo(lpString, converter), &isSameData))
 				{
 					if (isSameData)
 					{

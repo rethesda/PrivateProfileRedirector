@@ -14,7 +14,8 @@ namespace PPR
 		SaveOnThreadDetach = kxf::FlagSetValue<RedirectorOption>(3),
 		SaveOnProcessDetach = kxf::FlagSetValue<RedirectorOption>(4),
 		SaveOnGameSave = kxf::FlagSetValue<RedirectorOption>(5),
-		ProcessInlineComments = kxf::FlagSetValue<RedirectorOption>(6)
+		ProcessInlineComments = kxf::FlagSetValue<RedirectorOption>(6),
+		ProcessMultiKey = kxf::FlagSetValue<RedirectorOption>(7)
 	};
 	enum class XSEOption: uint32_t
 	{
@@ -84,7 +85,7 @@ namespace PPR
 
 			bool LoadRedirectorOption(kxf::FlagSet<RedirectorOption>& result, RedirectorOption option, const kxf::String& name, RedirectorOption disableIf = RedirectorOption::None) const
 			{
-				constexpr kxf::FlagSet<RedirectorOption> defaultOptions = RedirectorOption::SaveOnWrite|RedirectorOption::ProcessInlineComments;
+				constexpr kxf::FlagSet<RedirectorOption> defaultOptions = RedirectorOption::SaveOnWrite|RedirectorOption::ProcessInlineComments|RedirectorOption::ProcessMultiKey;
 				return LoadBoolOption(m_Redirector, result, option, name, disableIf, defaultOptions);
 			}
 			bool LoadXSEOption(kxf::FlagSet<XSEOption>& result, XSEOption option, const kxf::String& name, XSEOption disableIf = XSEOption::None) const
