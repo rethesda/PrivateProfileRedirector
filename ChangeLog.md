@@ -1,5 +1,10 @@
 *Dates in DD.MM.YYYY*
 
+# Version 0.6.3, 23.09.2025
+- Added exclusion system ([Redirector.Exclusions] section, see PrivateProfileRedirector.ini for details).
+- Added multikey support (ProcessMultiKey option, see PrivateProfileRedirector.ini for details).
+- Fixed a bug with string copy function causing RivaTuner Statistics Server overlay to stop working.
+
 # Version 0.6.2, 01.10.2024
 - Added ENB integration (see description for details).
 - Refactored integration modules and event processing.
