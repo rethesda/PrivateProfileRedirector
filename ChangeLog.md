@@ -1,5 +1,10 @@
 *Dates in DD.MM.YYYY*
 
+# Version 0.6.3.1, 10.06.2026
+- Updated to the latest xSE binaries.
+- Recompiled with /MT C runtime instead of /MD.
+- Updated to the latest kxf-framework changes (develop branch), no functional changes.
+
 # Version 0.6.3, 23.09.2025
 - Added exclusion system ([Redirector.Exclusions] section, see PrivateProfileRedirector.ini for details).
 - Added multikey support (ProcessMultiKey option, see PrivateProfileRedirector.ini for details).
@@ -12,10 +17,10 @@
 - Added pdb files into release distribution.
 
 # Version 0.6.1, 20.06.2024
-- Fixed some cases with INI key names contaning extra whitespaces.
-- Fixed file path normalization for paths contanining dot-segments.
+- Fixed some cases with INI key names containing extra whitespaces.
+- Fixed file path normalization for paths containing dot-segments.
 - Fixed `GetPrivateProfileString` branch when the default value was supposed to be returned. The function was returning the incorrect result.
-- Fixed `GetPrivateProfileSection` function using the wrong implementation causing wrong host process behavior (such as config inconsistency, corrupt config files, vitual issues, etc).
+- Fixed `GetPrivateProfileSection` function using the wrong implementation causing wrong host process behavior (such as config inconsistency, corrupt config files, visual issues, etc).
 - Implemented checks to avoid incrementing the write counter if the write request is trying to write exactly the same content as already present in the file.
 - Reduced default `SaveOnWriteBuffer` option value to 64. The high values shouldn't be needed anymore due to write check above.
 
@@ -23,8 +28,8 @@
 - Updated to the latest xSE binaries, added Fallout 4 NG update support.
 - Expanded possible range for `SaveOnWriteBuffer` option to [2, 4096] and set it to 512 by default.
 - The `EnableLog` option replaced by `LogLevel`. Default log level set to `Information` level so the mod would still log initialization process.
-- Rewritten using [KxFramework](https://github.com/Karandra/KxFramework) and general refactoring.
-- !!! This update led to a lot of changes to INI processing features. Most were reimplemented to conform known specifications and assumtions based on the mod scope (Bethesda games and their mods), but the new implementation may differ from the old versions behavior. The new behavior is, hopefully, more correct.
+- Rewritten using [kxf-framework](https://github.com/Karandra/kxf-framework) and general refactoring.
+- !!! This update led to a lot of changes to INI processing features. Most were reimplemented to conform known specifications and assumptions based on the mod scope (Bethesda games and their mods), but the new implementation may differ from the old versions behavior. The new behavior is, hopefully, more correct.
 
 # Version 0.5.3, 07.01.2022
 - Fixed `GetPrivateProfileString`, `GetPrivateProfileSectionNames` and `GetPrivateProfileSection` for key and section names query.

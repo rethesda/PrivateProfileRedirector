@@ -186,7 +186,7 @@ namespace PPR
 	{
 		SetName(kxf::StringViewOf(ProjectName));
 		SetVendorName(kxf::StringViewOf(ProjectAuthor));
-		SetVersion({VersionMajor, VersionMinor, VersionPatch});
+		SetVersion({VersionMajor, VersionMinor, VersionPatch, VersionRevision});
 	}
 
 	// ICoreApplication

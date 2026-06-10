@@ -18,14 +18,15 @@ namespace PPR
 	constexpr int VersionMajor = 0;
 	constexpr int VersionMinor = 6;
 	constexpr int VersionPatch = 3;
+	constexpr int VersionRevision = 1;
 
-	constexpr int MakeFullVersion(int major, int minor, int patch) noexcept
+	constexpr int MakeFullVersion(int major, int minor, int patch, int revision) noexcept
 	{
-		// 1.2.3 -> 1 * 100 + 2 * 10 + 3 * 1 = 123
-		// 0.1 -> (0 * 100) + (1 * 10) + (0 * 1) = 10
-		return (major * 100) + (minor * 10) + (patch * 1);
+		// 1.2.3.1		-> (1 * 1000) + (2 * 100) + (3 * 10) + (1 * 1) = 1231
+		// 0.1			-> (0 * 1000) + (1 * 100) + (0 * 10) + (0 * 1) = 100
+		return (major * 1000) + (minor * 100) + (patch * 10) + (revision * 1);
 	}
-	constexpr int VersionFull = MakeFullVersion(VersionMajor, VersionMinor, VersionPatch);
+	constexpr int VersionFull = MakeFullVersion(VersionMajor, VersionMinor, VersionPatch, VersionRevision);
 
 	using kxf::operator|;
 }
