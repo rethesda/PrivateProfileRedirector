@@ -74,7 +74,7 @@
 #pragma comment(lib, "f4se/x64/Release/f4se_1_10_163.lib")
 #pragma comment(lib, "f4se/x64/Release/f4se_common.lib")
 #pragma comment(lib, "f4se/x64/Release/f4se_loader_common.lib")
-#pragma comment(lib, "f4se/x64_v143/Release/common_vc14.lib")
+#pragma comment(lib, "f4se/x64_vc11/Release/common_vc11.lib")
 
 #elif xSE_PLATFORM_F4SEVR
 
