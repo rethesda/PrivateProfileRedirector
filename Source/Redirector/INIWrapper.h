@@ -267,7 +267,7 @@ namespace PPR
 
 			std::optional<kxf::String> QueryValue(const kxf::String& section, const kxf::String& key) const
 			{
-				if (auto value = m_INI.IniQueryValue(section, key))
+				if (auto value = m_INI.QuerySectionAttribute(section, key))
 				{
 					return ExtractValue(std::move(*value));
 				}
@@ -286,7 +286,7 @@ namespace PPR
 					if (!oldValue || *oldValue != value)
 					{
 						*sameData = false;
-						return m_INI.IniSetValue(section, key, value);
+						return m_INI.SetSectionAttribute(section, key, value);
 					}
 					else
 					{
@@ -296,7 +296,7 @@ namespace PPR
 				}
 				else
 				{
-					return m_INI.IniSetValue(section, key, value);
+					return m_INI.SetSectionAttribute(section, key, value);
 				}
 			}
 
@@ -306,7 +306,7 @@ namespace PPR
 			}
 			bool DeleteKey(const kxf::String& section, const kxf::String& key)
 			{
-				return m_INI.RemoveValue(section, key);
+				return m_INI.RemoveSectionAttribute(section, key);
 			}
 
 		public:
@@ -327,7 +327,7 @@ namespace PPR
 				bool isMultikey = m_INI.GetOptions().Contains(kxf::INIDocumentOption::MultiKey);
 
 				ZSSTRZZ<TChar> zstr(maxSize, converter);
-				m_INI.EnumKeyNames(section, [&](kxf::String name)
+				m_INI.EnumAttributeNames(section, [&](kxf::String name)
 				{
 					zstr.OnItem(name);
 				}, !isMultikey);

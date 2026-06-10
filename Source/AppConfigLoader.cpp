@@ -7,12 +7,12 @@ namespace PPR
 	{
 		m_Config.SetOptions(kxf::INIDocumentOption::MultiKey);
 
-		if (stream && m_Config.Load(*stream))
+		if (stream && m_Config.LoadDocument(*stream))
 		{
-			m_General = m_Config.QueryElement("General");
-			m_Redirector = m_Config.QueryElement("Redirector");
-			m_XSEInterface = m_Config.QueryElement("XSE");
-			m_ENBInterface = m_Config.QueryElement("ENB");
+			m_General = m_Config.QuerySection("General");
+			m_Redirector = m_Config.QuerySection("Redirector");
+			m_XSEInterface = m_Config.QuerySection("XSE");
+			m_ENBInterface = m_Config.QuerySection("ENB");
 		}
 	}
 }

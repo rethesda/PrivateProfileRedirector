@@ -48,7 +48,7 @@ namespace PPR
 	{
 		KXF_SCOPEDLOG_ARGS(path.GetFullPath(), options);
 
-		m_INI.ClearNode();
+		m_INI.Clear();
 		m_INI.SetOptions(options);
 
 		kxf::NativeFileStream fileStream;
@@ -66,12 +66,12 @@ namespace PPR
 				auto LoadUTF8 = [&]()
 				{
 					m_Encoding = Encoding::UTF8;
-					return m_INI.Load(std::span{reinterpret_cast<const char8_t*>(buffer.GetBufferCurrent()), buffer.GetBytesLeft()});
+					return m_INI.LoadDocument(std::span{reinterpret_cast<const char8_t*>(buffer.GetBufferCurrent()), buffer.GetBytesLeft()});
 				};
 				auto LoadUTF16LE = [&]()
 				{
 					m_Encoding = Encoding::UTF16LE;
-					return m_INI.Load(kxf::String(reinterpret_cast<const wchar_t*>(buffer.GetBufferCurrent()), buffer.GetBytesLeft() / sizeof(wchar_t)));
+					return m_INI.LoadDocument(kxf::String(reinterpret_cast<const wchar_t*>(buffer.GetBufferCurrent()), buffer.GetBytesLeft() / sizeof(wchar_t)));
 				};
 				auto LoadUTF32LE = [&]()
 				{
@@ -79,7 +79,7 @@ namespace PPR
 					kxf::IO::InputStreamReader reader(stream);
 
 					m_Encoding = Encoding::UTF32LE;
-					return m_INI.Load(reader.ReadStringUTF32(buffer.GetBytesLeft() / sizeof(uint32_t)));
+					return m_INI.LoadDocument(reader.ReadStringUTF32(buffer.GetBytesLeft() / sizeof(uint32_t)));
 				};
 
 				if (TestAndSkipBOM(buffer, BOM_UTF8))
@@ -186,7 +186,7 @@ namespace PPR
 					fileStream.Write(BOM_UTF8, std::size(BOM_UTF8));
 				}
 				
-				if (m_INI.Save(fileStream))
+				if (m_INI.SaveDocument(fileStream))
 				{
 					KXF_SCOPEDLOG.LogReturn(true);
 					return true;
@@ -197,7 +197,7 @@ namespace PPR
 			{
 				KXF_SCOPEDLOG.Info() << "Saving as UTF-16LE";
 
-				auto content = m_INI.Save();
+				auto content = m_INI.SaveDocument();
 				if (addSignature)
 				{
 					KXF_SCOPEDLOG.Info() << "Writing BOM";
@@ -216,7 +216,7 @@ namespace PPR
 			{
 				KXF_SCOPEDLOG.Info() << "Saving as UTF-32LE";
 
-				auto content = m_INI.Save();
+				auto content = m_INI.SaveDocument();
 				if (addSignature)
 				{
 					KXF_SCOPEDLOG.Info() << "Writing BOM";

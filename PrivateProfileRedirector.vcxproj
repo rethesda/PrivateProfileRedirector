@@ -426,7 +426,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\Skyrim;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -461,7 +461,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\FalloutNV;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -496,7 +496,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\SkyrimSE;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -531,7 +531,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\SkyrimAE;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -566,7 +566,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\SkyrimAE;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -601,7 +601,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\Fallout4;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -636,7 +636,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\Fallout4VR;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -671,7 +671,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\SkyrimVR;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -706,7 +706,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\Skyrim;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -741,7 +741,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\FalloutNV;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -776,7 +776,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\SkyrimSE;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -811,7 +811,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\SkyrimAE;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -846,7 +846,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\SkyrimAE;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -884,7 +884,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <ShowProgress>NotSet</ShowProgress>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -922,7 +922,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <ShowProgress>NotSet</ShowProgress>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -957,7 +957,7 @@ copy "$(ProjectDir)Build\$(TargetName)_preload.txt" "$(ProjectDir)Bin\$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)ScriptExtender\SkyrimVR;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>Exports.def</ModuleDefinitionFile>
-      <DelayLoadDLLs>comctl32.dll;comdlg32.dll;msimg32.dll;gdi32.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
+      <DelayLoadDLLs>comdlg32.dll;comctl32.dll;msimg32.dll;gdi32.dll;gdiplus.dll;uxtheme.dll;winspool.drv</DelayLoadDLLs>
       <AdditionalDependencies>$(CoreLibraryDependencies);delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>

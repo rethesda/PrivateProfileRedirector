@@ -51,7 +51,7 @@ namespace PPR
 			template<class TOption>
 			bool LoadBoolOption(const kxf::INIDocumentSection& section, kxf::FlagSet<TOption>& result, TOption option, const kxf::String& name, TOption disableIf, kxf::FlagSet<TOption> defaultOptions = {}) const
 			{
-				bool value = section.GetAttributeBool(name, defaultOptions.Contains(option));
+				bool value = section.QueryAttribute<bool>(name).value_or(defaultOptions.Contains(option));
 				if (disableIf != TOption::None && result.Contains(disableIf))
 				{
 					value = false;

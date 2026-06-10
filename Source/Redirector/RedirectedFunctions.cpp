@@ -350,7 +350,7 @@ namespace PPR
 
 			if (auto value = configObject.GetINI().QueryValue(EncodingTo(appName, converter), EncodingTo(keyName, converter)))
 			{
-				if (auto intValue = value->ToInteger<INT>(-1))
+				if (auto intValue = value->ParseInteger<INT>(-1))
 				{
 					KXF_SCOPEDLOG.Trace(logCategory).Format("String '{}' converted to an integer: '{}'", *value, *intValue);
 					return *intValue;
@@ -436,7 +436,7 @@ namespace PPR
 			auto sectionName = EncodingTo(appName, converter);
 
 			ZSSTRZZ<TChar> zstr(nSize, converter);
-			ini.Get().EnumSectionItems(sectionName, [&](kxf::String name, kxf::String value)
+			ini.Get().EnumSectionValues(sectionName, [&](kxf::String name, kxf::String value)
 			{
 				zstr.OnItem(name, value);
 			});

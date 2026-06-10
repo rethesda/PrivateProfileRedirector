@@ -105,12 +105,12 @@ namespace PPR
 
 		// Open log
 		AppConfigLoader config(m_PluginFS.OpenToRead("PrivateProfileRedirector.ini"));
-		if (auto enableLog = config.GetGeneralSection().QueryAttributeBool(L"EnableLog"); enableLog == true)
+		if (auto enableLog = config.GetGeneralSection().QueryAttribute<bool>(L"EnableLog"); enableLog == true)
 		{
 			// Open log with max level, v0.5.x compatibility
 			OpenLog(kxf::LogLevel::Unknown);
 		}
-		else if (auto logLevel = config.GetGeneralSection().QueryAttributeInt<kxf::LogLevel>(L"LogLevel"))
+		else if (auto logLevel = config.GetGeneralSection().QueryAttribute<kxf::LogLevel>(L"LogLevel"))
 		{
 			OpenLog(*logLevel);
 		}

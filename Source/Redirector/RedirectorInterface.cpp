@@ -32,16 +32,16 @@ namespace PPR
 		config.LoadRedirectorOption(m_Options, RedirectorOption::ProcessInlineComments, L"ProcessInlineComments");
 		config.LoadRedirectorOption(m_Options, RedirectorOption::ProcessMultiKey, L"ProcessMultiKey");
 		
-		m_SaveOnWriteBuffer = config.GetRedirectorSection().GetAttributeInt(L"SaveOnWriteBuffer", m_SaveOnWriteBuffer);
+		m_SaveOnWriteBuffer = config.GetRedirectorSection().GetAttribute<int>(L"SaveOnWriteBuffer", m_SaveOnWriteBuffer);
 		if (!m_Options.Contains(RedirectorOption::SaveOnWrite) || std::clamp(m_SaveOnWriteBuffer, 2, 4096) != m_SaveOnWriteBuffer)
 		{
 			m_SaveOnWriteBuffer = 0;
 		}
 
-		auto encodingConverter = std::make_unique<kxf::NativeEncodingConverter>(config.GetRedirectorSection().GetAttributeInt(L"CodePage", CP_ACP));
+		auto encodingConverter = std::make_unique<kxf::NativeEncodingConverter>(config.GetRedirectorSection().GetAttribute<int>(L"CodePage", CP_ACP));
 
 		// Exclusions
-		if (auto section = config.Get().QueryElement("Redirector.Exclusions"))
+		if (auto section = config.Get().QuerySection("Redirector.Exclusions"))
 		{
 			section.EnumAttributeValues("Exclusion", [&](kxf::String value)
 			{
